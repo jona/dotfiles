@@ -17,6 +17,9 @@ Plugin 'kien/ctrlp.vim'
 Plugin 'moll/vim-node'
 Plugin 'pangloss/vim-javascript'
 Plugin 'scrooloose/nerdtree'
+Plugin 'Shougo/neocomplete.vim'
+Plugin 'Shougo/neosnippet'
+Plugin 'Shougo/neosnippet-snippets'
 Plugin 'tomtom/tinykeymap_vim'
 Plugin 'tpope/vim-rails'
 Plugin 'tpope/vim-bundler'
@@ -30,7 +33,7 @@ Plugin 'kchmck/vim-coffee-script'
 Plugin 'rking/ag.vim'
 Plugin 'groenewege/vim-less'
 Plugin 'mattn/emmet-vim'
-Plugin 'Valloric/YouCompleteMe'
+Plugin 'lambdalisue/vim-gita'
 call vundle#end()
 " }}}
 
@@ -70,7 +73,6 @@ set shiftwidth=2
 set softtabstop=2
 set expandtab
 set wrap
-set textwidth=160
 set cindent
 set smarttab
 " }}}
@@ -147,6 +149,37 @@ let g:airline#extensions#default#section_truncate_width = {
 	\ 'z': 100
 \ }
 map <Leader>ar :AirlineRefresh<CR>
+
+" neocomplete
+let g:acp_enableAtStartup = 0
+let g:neocomplete#enable_at_startup = 1
+let g:neocomplete#enable_smart_case = 1
+let g:neocomplete#sources#syntax#min_keyword_length = 3
+let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
+let g:neocomplete#sources#dictionary#dictionaries = {
+\ 'default' : '',
+\ }
+if !exists('g:neocomplete#keyword_patterns')
+  let g:neocomplete#keyword_patterns = {}
+endif
+let g:neocomplete#keyword_patterns['default'] = '\h\w*'
+
+" neosnippet
+imap <C-k> <Plug>(neosnippet_expand_or_jump)
+smap <C-k> <Plug>(neosnippet_expand_or_jump)
+xmap <C-k> <Plug>(neosnippet_expand_target)
+
+imap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+      \ "\<Plug>(neosnippet_expand_or_jump)"
+      \: pumvisible() ? "\<C-n>" : "\<TAB>"
+smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+      \ "\<Plug>(neosnippet_expand_or_jump)"
+      \: "\<TAB>"
+let g:neosnippet#snippets_directory='~/.neosnippets'
+
+if has('conceal')
+  set conceallevel=2 concealcursor=i
+endif
 
 " Colors
 set background=dark
