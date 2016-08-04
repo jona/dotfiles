@@ -40,15 +40,15 @@ alias gst='git status'
 
 # TMUX
 function tmuxa {
-  tmux a -t $1
+  tmux -u a -t $1
 }
 
 function tmuxls {
-  tmux ls
+  tmux -u ls
 }
 
 function tmuxn {
-  tmux new -s $1
+  tmux -u new -s $1
 }
 
 if [ -f ~/.git-completion.bash ]; then
