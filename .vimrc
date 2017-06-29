@@ -7,7 +7,6 @@ call vundle#begin()
 
 Plugin 'gmarik/vundle'
 Plugin 'airblade/vim-gitgutter'
-Plugin 'altercation/vim-colors-solarized'
 Plugin 'bling/vim-airline'
 Plugin 'chriskempson/base16-vim'
 Plugin 'digitaltoad/vim-jade'
@@ -16,7 +15,6 @@ Plugin 'geekjuice/vim-spec'
 Plugin 'kien/ctrlp.vim'
 Plugin 'moll/vim-node'
 Plugin 'pangloss/vim-javascript'
-Plugin 'scrooloose/nerdtree'
 Plugin 'Shougo/neocomplete.vim'
 Plugin 'Shougo/neosnippet'
 Plugin 'Shougo/neosnippet-snippets'
@@ -34,6 +32,12 @@ Plugin 'rking/ag.vim'
 Plugin 'groenewege/vim-less'
 Plugin 'mattn/emmet-vim'
 Plugin 'lambdalisue/vim-gita'
+Plugin 'mxw/vim-jsx'
+Plugin 'nikvdp/ejs-syntax'
+"Plugin 'othree/yajs.vim'
+Plugin 'elixir-lang/vim-elixir'
+Plugin 'christoomey/vim-tmux-navigator'
+Plugin 'derekwyatt/vim-scala'
 call vundle#end()
 " }}}
 
@@ -98,6 +102,24 @@ set virtualedit+=block
 noremap <silent> <leader><space> :noh<CR>:call clearmatches()<CR>
 
 filetype plugin indent on
+map <Leader>d :filetype detect<CR>
+
+augroup ft_ruby
+  au!
+  au FileType ruby setlocal foldmethod=syntax
+  au FileType ruby,eruby,yaml set ai ts=2 sw=2 sts=2 et
+  au BufNewFile,BufRead *.mobile.erb let b:eruby_subtype='html'
+  au BufNewFile,BufRead *.mobile.erb set filetype=eruby
+augroup END
+
+augroup ft_javascript
+  au!
+  au FileType javascript setlocal foldenable|setlocal foldmethod=syntax|setlocal foldlevel=2
+  au FileType javascript,jade set ai ts=2 sw=2 sts=2 et
+augroup END
+
+" Autocmd
+autocmd BufWritePre * %s/\s\+$//e
 
 " Formatting
 
@@ -133,10 +155,11 @@ nnoremap <C-H> <C-W><C-H>
 noremap <Leader>. :Ag<Space>
 
 " CTRL-P
+let g:ctrlp_max_files=0
 let g:ctrlp_map = '<leader>,'
 let g:ctrlp_command = 'CtrlP'
 let g:ctrlp_custom_ignore = {
-	\ 'dir': '\v[\/](.git|.svn|vendor|node_modules)'
+	\ 'dir': '\v[\/](.git|.svn|vendor|node_modules|_build|deps)'
 	\ }
 
 " vim-airline
@@ -178,13 +201,39 @@ smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
       \: "\<TAB>"
 let g:neosnippet#snippets_directory='~/.neosnippets'
 
+" hi Pmenu ctermbg=grey ctermfg=white
+" hi PmenuSel ctermbg=white ctermfg=grey
+" hi PmenuSbar ctermbg=grey ctermfg=white
+
 if has('conceal')
   set conceallevel=2 concealcursor=i
 endif
 
+" spec
+if filereadable(fnamemodify('docker-compose.yml', ':p'))
+  let g:rspec_command = "!docker-compose run web bash -c \"bundle exec rspec {spec}\""
+  let g:mocha_js_command = "!docker-compose run web bash -c \"\\$(npm bin)/mocha {spec}\""
+endif
+
+map <Leader>t :call RunCurrentSpecFile()<CR>
+map <Leader>s :call RunNearestSpec()<CR>
+map <Leader>l :call RunLastSpec()<CR>
+map <Leader>a :call RunAllSpecs()<CR>
+
+" vim-javascript
+let g:jsx_ext_required = 0
+
 " Colors
 set background=dark
 set t_Co=256
-colorscheme base16-default 
+colorscheme base16-default-dark
 hi LineNr ctermfg=grey ctermbg=236
 hi CursorLine ctermbg=236
+
+" Highlighting
+" hi LineNr ctermfg=grey ctermbg=236
+" hi CursorLine ctermbg=236
+" hi CursorLineNR ctermfg=black ctermbg=grey
+" hi Visual ctermfg=black ctermbg=white
+" hi Search ctermfg=black ctermbg=white
+" hi IncSearch ctermfg=black ctermbg=white
